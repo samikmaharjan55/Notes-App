@@ -17,7 +17,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Notes App'),
+        title: const Text('Collective Freedom Notes'),
       ),
       body: ValueListenableBuilder<Box<NotesModel>>(
         valueListenable: Boxes.getData().listenable(),
