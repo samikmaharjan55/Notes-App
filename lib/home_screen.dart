@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:notes_app/boxes/boxes.dart';
 import 'package:notes_app/models/notes_model.dart';
 
@@ -19,8 +20,34 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: Text('Notes App'),
       ),
-      body: Column(
-        children: [],
+      body: ValueListenableBuilder<Box<NotesModel>>(
+        valueListenable: Boxes.getData().listenable(),
+        builder: (context, box, _) {
+          var data = box.values.toList().cast<NotesModel>();
+          return ListView.builder(
+              reverse: true,
+              shrinkWrap: true,
+              itemCount: box.length,
+              itemBuilder: (context, index) {
+                return Container(
+                  height: 80,
+                  child: Card(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 15, horizontal: 10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(data[index].title.toString()),
+                          Text(data[index].description.toString()),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              });
+        },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
@@ -73,10 +100,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         description: descriptionController.text);
                     final box = Boxes.getData();
                     box.add(data);
-                    data.save();
                     titleController.clear();
                     descriptionController.clear();
-                    print(box);
                     Navigator.pop(context);
                   },
                   child: Text('Add')),
